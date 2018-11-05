@@ -68,6 +68,48 @@
             </holdingSimple>
             </xsl:if>
         </xsl:for-each>
+        <xsl:for-each select="subjectName">
+            <xsl:for-each select="tokenize(current(), '\| ')">
+                <subject>
+                    <name type="personal">
+                        <namePart>
+                            <xsl:value-of select="."/>
+                        </namePart>
+                    </name>
+                </subject>
+            </xsl:for-each>
+        </xsl:for-each>
+        
+        <xsl:for-each select="lcsh">
+            <subject authority="lcsh">
+                <xsl:for-each select="tokenize(current(), '\| ')">
+                    
+                    <topic><xsl:value-of select="."/></topic>
+                    
+                </xsl:for-each>
+            </subject>    
+        </xsl:for-each>
+        
+        <xsl:for-each select="trctemp">
+            <subject authority="trctemp">
+                <xsl:for-each select="tokenize(current(), '\| ')">
+                    
+                    <topic><xsl:value-of select="."/></topic>
+                    
+                </xsl:for-each>
+            </subject>    
+        </xsl:for-each>
+        
+        <xsl:for-each select="subjectLocal">
+            <subject authority="local">
+                <xsl:for-each select="tokenize(current(), '\| ')">
+                    
+                    <topic><xsl:value-of select="."/></topic>
+                    
+                </xsl:for-each>
+            </subject>    
+        </xsl:for-each>
+        
         
         <xsl:for-each select="note">
             <xsl:if test="@type='local'">
@@ -80,8 +122,6 @@
             <note type="administrative"><xsl:value-of select="."/></note>
         </xsl:if>
         </xsl:for-each>
-        
-        <xsl:apply-templates select="subject"/>
         
         <xsl:for-each select="typeOfResource">
             <typeOfResouce><xsl:value-of select="."/></typeOfResouce>
@@ -180,7 +220,7 @@
     </xsl:template>
 
     <xsl:template match="contributors">
-        <xsl:for-each select="tokenize(current(), '; ')">
+        <xsl:for-each select="tokenize(current(), '\| ')">
             <name type="personal">
                 <namePart>
                     <xsl:value-of select="."/> 
@@ -239,7 +279,7 @@
             
             <!-- PUBLISHER -->
             <xsl:for-each select="publisher">
-                <xsl:for-each select="tokenize(current(), '; ')">
+                <xsl:for-each select="tokenize(current(), '\| ')">
                     <publisher><xsl:value-of select='.'/></publisher>
                 </xsl:for-each>
             </xsl:for-each>
@@ -252,14 +292,14 @@
     <xsl:template match="place">
         <xsl:for-each select="placeTerm[@type='text']">
             <xsl:variable name="placeList" select="."/>
-            <xsl:for-each select="tokenize(current(), '; ')">
+            <xsl:for-each select="tokenize(current(), '\| ')">
                 <xsl:variable name="id-pos" select="position()"/>
                 <place>
                     <placeTerm type="text">
                         <xsl:value-of select="."/>
                     </placeTerm>
                     <placeTerm authority="marccountry" type="code">
-                        <xsl:value-of select="tokenize($placeList/following-sibling::placeTerm[@type='code'],'; ')[position() = $id-pos]"/>
+                        <xsl:value-of select="tokenize($placeList/following-sibling::placeTerm[@type='code'],'\| ')[position() = $id-pos]"/>
                     </placeTerm>
                 </place>
         </xsl:for-each>
@@ -295,14 +335,14 @@
     <xsl:template match="language">
         <xsl:for-each select="languageTerm[@type='text']">
             <xsl:variable name="termList" select="."/>
-            <xsl:for-each select="tokenize(., '; ')">
+            <xsl:for-each select="tokenize(., '\| ')">
                 <xsl:variable name="id-pos" select="position()"/>
                 <language>
                     <languageTerm type="text">
                         <xsl:value-of select="."/>
                     </languageTerm>
                     <languageTerm type="code">
-                        <xsl:value-of select="tokenize($termList/following-sibling::languageTerm[@type='code'],'; ')[position() = $id-pos]"/>
+                        <xsl:value-of select="tokenize($termList/following-sibling::languageTerm[@type='code'],'\| ')[position() = $id-pos]"/>
                     </languageTerm>
                 </language>
             </xsl:for-each>
@@ -320,7 +360,7 @@
             
             <!-- publication format -->
             <xsl:if test="form[@type='publication format']='*'">
-                <xsl:for-each select="tokenize(current(), '; ')">
+                <xsl:for-each select="tokenize(current(), '\| ')">
                     <form type="publication format"><xsl:value-of select="."/></form>
                 </xsl:for-each>
             </xsl:if>
@@ -328,67 +368,10 @@
         </physicalDescription>
     </xsl:template>
   
-    
-
-
-   <xsl:template match="subject">
-       <xsl:choose>
-           <xsl:when test="./subjectName!=''">
-               <xsl:for-each select="./subjectName">
-                   <subject>
-                       <xsl:for-each select="tokenize(current(), '|')">
-
-                           <name type="personal">
-                               <namePart>
-                                   <xsl:value-of select="."/>
-                               </namePart>
-                           </name>
-                       
-                       </xsl:for-each>
-                   </subject>
-               </xsl:for-each>
-           </xsl:when>
-           <xsl:when test="./lcsh!=''">
-               <xsl:for-each select="./lcsh">
-                   <subject authority="lcsh">
-                       <xsl:for-each select="tokenize(current(), '|')">
-
-                           <topic><xsl:value-of select="."/></topic>
-                       
-                       </xsl:for-each>
-                   </subject>
-               </xsl:for-each>
-           </xsl:when>
-           <xsl:when test="./trctemp!=''">
-               <xsl:for-each select="./trctemp">
-                   <subject authority="trctemp">
-                       <xsl:for-each select="tokenize(current(), '|')">
-
-                           <topic><xsl:value-of select="."/></topic>
-                       
-                       </xsl:for-each>
-                   </subject>
-               </xsl:for-each>
-           </xsl:when>
-           <xsl:when test="./subjectLocal!=''">
-               <xsl:for-each select="./subjectLocal">
-                   <subject authority="local">
-                       <xsl:for-each select="tokenize(current(), '; ')">
-
-                           <topic><xsl:value-of select="."/></topic>
-                       
-                       </xsl:for-each>
-                   </subject>
-               </xsl:for-each>
-           </xsl:when>
-           
-           
-       </xsl:choose>
-   </xsl:template>
    
     <xsl:template match="genre">
 
-            <xsl:for-each select="tokenize(current(), '; ')">
+            <xsl:for-each select="tokenize(current(), '\| ')">
                 <genre><xsl:value-of select="."/></genre>
             </xsl:for-each>   
         
