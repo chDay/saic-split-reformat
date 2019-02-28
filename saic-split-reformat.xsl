@@ -124,7 +124,7 @@
         </xsl:for-each>
         
         <xsl:for-each select="typeOfResource">
-            <typeOfResouce><xsl:value-of select="."/></typeOfResouce>
+            <typeOfResource><xsl:value-of select="."/></typeOfResource>
         </xsl:for-each>
         
         <xsl:apply-templates select="genre"/>
@@ -135,8 +135,8 @@
         <xsl:for-each select="accessCondition[@type='access restriction']">
             <accessCondition type="access restriction"><xsl:value-of select="."/></accessCondition>
         </xsl:for-each>
-        <xsl:for-each select="note[@type='digitizationspecifications']">
-            <note type="digitizationspecifications"><xsl:value-of select="."/></note>
+        <xsl:for-each select="note[@type='digitization specifications']">
+            <note type="digitization specifications"><xsl:value-of select="."/></note>
         </xsl:for-each>
         <xsl:for-each select="accessCondition[@type='use and reproduction']">
             <accessCondition type="use and reproduction"><xsl:value-of select="."/></accessCondition>
@@ -341,7 +341,7 @@
                     <languageTerm type="text">
                         <xsl:value-of select="."/>
                     </languageTerm>
-                    <languageTerm type="code">
+                    <languageTerm type="code" authority="iso639-2b">
                         <xsl:value-of select="tokenize($termList/following-sibling::languageTerm[@type='code'],'\| ')[position() = $id-pos]"/>
                     </languageTerm>
                 </language>
