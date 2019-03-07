@@ -42,7 +42,8 @@
         <xsl:apply-templates select="name"/>
         
         <xsl:apply-templates select="contributors"/>
-
+        <xsl:apply-templates select="contributorscorporate"/>
+        
         <!-- ORIGININFO -->
         <xsl:apply-templates select="originInfo"/>
 
@@ -68,6 +69,17 @@
             </holdingSimple>
             </xsl:if>
         </xsl:for-each>
+
+        <xsl:for-each select="OtherFormatURL">
+
+                <relatedItem type="otherFormat">
+                    <location>
+                        <url><xsl:value-of select="."/></url>
+                    </location>
+                </relatedItem>
+            
+        </xsl:for-each>
+        
         <xsl:for-each select="subjectName">
             <xsl:for-each select="tokenize(current(), '\| ')">
                 <subject>
@@ -228,11 +240,25 @@
                 <role>
                     <roleTerm type="text" authority="marcrelator">Contributor</roleTerm>
                 </role>
-                <namePart/>
                 <affiliation/>
             </name>
         </xsl:for-each>    
     </xsl:template>
+
+    <xsl:template match="contributorscorporate">
+        <xsl:for-each select="tokenize(current(), '\| ')">
+            <name type="corporate">
+                <namePart>
+                    <xsl:value-of select="."/> 
+                </namePart>
+                <role>
+                    <roleTerm type="text" authority="marcrelator">Contributor</roleTerm>
+                </role>
+                <affiliation/>
+            </name>
+        </xsl:for-each>    
+    </xsl:template>
+    
 
     <xsl:template match="titleInfo">
         
@@ -353,6 +379,7 @@
     <xsl:template match="physicalDescription">
         <physicalDescription>
             <extent><xsl:value-of select="extent"/></extent>
+            
             <!-- materials -->
             <xsl:if test="form[@type='materials']='*'">
                 <form type="materials"><xsl:value-of select="."/></form>
@@ -364,6 +391,15 @@
                     <form type="publication format"><xsl:value-of select="."/></form>
                 </xsl:for-each>
             </xsl:if>
+            
+            <!-- label transcription -->
+            <xsl:for-each select="note[@type='label']">
+                <note type="label"><xsl:value-of select="."/></note>
+            </xsl:for-each>
+            <xsl:for-each select="note[@type='handwriting']">
+                <note type="handwriting"><xsl:value-of select="."/></note>
+            </xsl:for-each>
+            
             
         </physicalDescription>
     </xsl:template>
